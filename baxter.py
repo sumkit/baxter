@@ -9,14 +9,21 @@ def Help():
 	'''
 
 def Run(t,*args):
-	#move arm
-	arm = args[0]
-	dq = args[1]
-	q = t.robot.Q(arm=arm)  #Current joint angles
-	q_trg = [q[d]+dq[d] for d in range(7)]  #Target
-	t.robot.MoveToQ(q_trg, dt=4.0, arm=arm)
+	#inverse kinematics
+	arm = LEFT
+	x_trg = args[0]
+	IK = t.robot.IK(x_trg, arm=arm) #target joint angles
 
-	#move fingers
-	pos = args[1]
-	t.robot.MoveGripper(pos, arm=arm)
-	return 
+	#move arm
+	q = list(t.robot.Q(arm=arm))  #Current joint angles
+	q_traj = [
+		q, 
+		[q[d]+(0.1,0.0,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
+		[q[d]+(-0.1,0.0,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
+		[q[d]+(0.0,0.1,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
+		[q[d]+(0.0,-0.1,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
+		q
+	]
+	t.robot.FollowQTraj(q_traj, IK, arm=arm)
+
+	return "finito"
