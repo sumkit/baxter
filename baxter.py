@@ -4,7 +4,6 @@ def Help():
 	return '''Move arm to target joint angles.
 	Then move fingers of gripper to a target position.
 	Usage: 
-	  ARM: RIGHT or LEFT. default=t.robot.Arm
 	  POSE: Array of target pose = [x,y,z,qx,qy,qz,qw] (position, quaternion)
 	'''
 
@@ -26,4 +25,4 @@ def Run(t,*args):
 	]
 	t.robot.FollowQTraj(q_traj, IK, arm=arm)
 
-	return "finito"
+	print "finito"
