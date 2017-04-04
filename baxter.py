@@ -10,7 +10,7 @@ def Help():
 def Run(t,*args):
 	#inverse kinematics
 	arm = LEFT
-	x_trg = args[0]
+	x_trg = args[1]
 	IK = t.robot.IK(x_trg, arm=arm) #target joint angles
 
 	#move arm
@@ -23,6 +23,6 @@ def Run(t,*args):
 		[q[d]+(0.0,-0.1,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
 		q
 	]
-	t.robot.FollowQTraj(q_traj, IK, arm=arm)
+	t.robot.FollowQTraj(q_traj, [0.0, 3.0, 6.0, 9.0, 12.0, 15.0], arm)
 
 	print "finito"
