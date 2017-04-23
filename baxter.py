@@ -8,8 +8,9 @@ def Help():
 	'''
 
 def Run(t,*args):
-	file = open("coords.txt", "r")
-	arr = file.readlines()
+	# file = open("coords.txt", "r")
+	# arr = file.readlines()
+	arr = ["0.2 0.2", "0.3 0.3", "0.4 0.4", "0.5 0.5", "0.6 0.6", "0.7 0.7"]
 	curr = list(t.robot.FK(arm=arm))
 	for index in range(len(arr)):
 		moveto_arr = []
@@ -18,22 +19,7 @@ def Run(t,*args):
 		y = float(temp[1])
 		moveto_arr.append(x)
 		moveto_arr.append(y)
-		moveto_arr.append(curr[2])
-
-		#inverse kinematics
-		#x_trg = arr[index]
-		#IK = t.robot.IK(x_trg, arm=arm) #target joint angles
-
-		#move arm
-		#q_traj = [
-			#q, 
-			#[q[d]+(0.1,0.0,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
-			#[q[d]+(-0.1,0.0,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
-			#[q[d]+(0.0,0.1,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
-			#[q[d]+(0.0,-0.1,0.0,0.0,0.0,0.0,0.0)[d] for d in range(7)],
-			#q
-		#]
-		#t.robot.FollowQTraj(q_traj, [0.0, 2.0, 4.0, 6.0, 8.0, 10.0], arm)
+		moveto_arr.append(curr[2]) #keep z coordinate constant
 		t.robot.MoveToX(moveto_arr, dt=4.0, arm=LEFT)
 
 	print "finito"
