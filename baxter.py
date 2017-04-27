@@ -5,34 +5,38 @@ def Help():
         Then move fingers of gripper to a target position.
         Usage: 
         '''
-
 def Run(t,*args):
         filef = open("/home/hm/ros_ws/lfd_trick/scripts/motions/hm17/painting/coords.txt", "r")
         arr = filef.readlines()
 
         curr = list(t.robot.FK(arm=LEFT))
-        #t.robot.MoveToX([tempcurr[0], tempcurr[1], tempcurr[2]-0.2]+tempcurr[3:], dt=3.0, arm=LEFT)
-
-        for index in range(0):
-                #curr = list(t.robot.FK(arm=LEFT))
+        t_traj =[0.0]
+        x_traj =[curr]
+        for index in range(len(arr)):
                 moveto_arr = []
                 temp = arr[index].split(" ")
-                x = curr[0]-float(temp[0])
-                y = curr[1]-float(temp[1])
-                moveto_arr.append(x)
-                moveto_arr.append(y)
-                moveto_arr.append(curr[2])
-                moveto_arr += curr[3:]
+                x_trg = curr[0]+float(temp[0])*0.33
+                y_trg = curr[1]+float(temp[1])*0.33
+                x_dir = 1
+                y_dir = 1
+                tempcurr = x_traj[-1]
+                if(x_trg < tempcurr[0]):
+                        x_dir = -1
+                if(y_trg < tempcurr[1]):
+                        y_dir = -1
 
-                print("1",moveto_arr)
-                t.robot.MoveToX(moveto_arr, dt=3.0, arm=LEFT)
+                numsteps = 3
+                x_diff = x_dir*(x_trg-tempcurr[0])/numsteps
+                y_diff = y_dir*(y_trg-tempcurr[1])/numsteps
 
-                x = curr[0]-float(temp[2])
-                y = curr[1]-float(temp[3])
-                moveto_arr2 = [x,y,curr[2]] + curr[3:]
-                print("2",moveto_arr2)
-                t.robot.MoveToX(moveto_arr2, dt=3.0, arm=LEFT)
+                for i in range(numsteps):
+                        blahx = tempcurr[0]+(x_diff*(i+1)*x_dir)
+                        blahy = tempcurr[1]+(y_diff*(i+1)*y_dir)
+                        x_traj.append([blahx, blahy]+tempcurr[2:])
+                        t_traj.append(t_traj[-1]+0.8)
+                        print([blahx, blahy])
 
-        t.robot.MoveToX(curr, dt=3.0, arm=LEFT)
+        print("x", x_traj)
+        print("t", t_traj)
+        t.robot.FollowXTraj(x_traj, t_traj, arm=LEFT)
         print("finito")
-
