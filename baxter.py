@@ -12,6 +12,7 @@ def Run(t,*args):
         curr = list(t.robot.FK(arm=LEFT))
         t_traj =[0.0]
         x_traj =[curr]
+        arr = arr[1:]
         for index in range(len(arr)):
                 moveto_arr = []
                 temp = arr[index].split(" ")
