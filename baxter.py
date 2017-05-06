@@ -1,12 +1,11 @@
 from core_tool import *
 
 def Help():
-        return '''Move arm to target joint angles.
-        Then move fingers of gripper to a target position.
-        Usage: 
+        return '''Move arm along on a path of a list of coordinates.
+        Usage: <no parameters>
         '''
 def Run(t,*args):
-        filef = open("/home/hm/ros_ws/lfd_trick/scripts/motions/hm17/painting/coords.txt", "r")
+        filef = open("/home/hm/ros_ws/lfd_trick/scripts/motions/hm17/painting/coords3.txt", "r")
         arr = filef.readlines()
 
         curr = list(t.robot.FK(arm=LEFT))
@@ -26,7 +25,7 @@ def Run(t,*args):
                 if(y_trg < tempcurr[1]):
                         y_dir = -1
 
-                numsteps = 3
+                numsteps = 5
                 x_diff = x_dir*(x_trg-tempcurr[0])/numsteps
                 y_diff = y_dir*(y_trg-tempcurr[1])/numsteps
 
@@ -34,10 +33,6 @@ def Run(t,*args):
                         blahx = tempcurr[0]+(x_diff*(i+1)*x_dir)
                         blahy = tempcurr[1]+(y_diff*(i+1)*y_dir)
                         x_traj.append([blahx, blahy]+tempcurr[2:])
-                        t_traj.append(t_traj[-1]+0.8)
-                        print([blahx, blahy])
-
-        print("x", x_traj)
-        print("t", t_traj)
+                        t_traj.append(t_traj[-1]+0.7)
+                        
         t.robot.FollowXTraj(x_traj, t_traj, arm=LEFT)
-        print("finito")
